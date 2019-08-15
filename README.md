@@ -1,7 +1,7 @@
-# df manipulates dropframe timecode at 29.97fps (30000/1001)
+# tc manipulates timecodes including 29.97 dropframe timecode (30000/1001)
 
 ## Usage
 ```sh
-go get github.com/siuyin/df
+go get github.com/siuyin/tc
 
 ```

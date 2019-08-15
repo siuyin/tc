@@ -1,11 +1,15 @@
-// Package df provides NTSC dropframe calculations.
-package df
+// Package tc provides timecode (including 29.97 dropframe) calculations.
+package tc
 
 import (
 	"fmt"
-	"math"
 	"strconv"
 	"time"
+)
+
+const (
+	frameTimeNS = 1001 * 1000000000 / 30000
+	tDF29_97    = time.Duration(1001 * 1000000000 / 30000)
 )
 
 func validTC(tc string) bool {
@@ -15,27 +19,32 @@ func validTC(tc string) bool {
 	return true
 }
 
-// TC represents a dropframe timecode
-type TC struct {
+// DF29_97 represents a dropframe timecode
+type DF29_97 struct {
 	tc string
+}
+type TC interface {
+	Add(tc *TC) *TC
+	Sub(tc *TC) *TC
+	Dur() time.Duration
 }
 
 // NewTC returns a reference to a new dropframe timecode.
-func NewTC(tc string) *TC {
+func NewDF29_97(tc string) *DF29_97 {
 	if !validTC(tc) {
-		return &TC{"00:00:00;00"}
+		return &DF29_97{"00:00:00;00"}
 	}
 	tc = tc[0:8] + ";" + tc[9:11]
-	return &TC{tc}
+	return &DF29_97{tc}
 }
 
-func (c *TC) String() string {
+func (c *DF29_97) String() string {
 	return c.tc
 }
 
 // DropFrameCount returns the number of frames at 30 fps given a
 // dropframe timecode tc.
-func (c *TC) DropFrameCount() (int, error) {
+func (c *DF29_97) DropFrameCount() (int, error) {
 	hh, err := strconv.Atoi(c.tc[0:2])
 	if err != nil {
 		return 0, err
@@ -57,7 +66,7 @@ func (c *TC) DropFrameCount() (int, error) {
 
 // FrameCount returns the number of frames at 29.97 (30000/1001)
 // given a dropframe timecode tc.
-func (c *TC) FrameCount() (int, error) {
+func (c *DF29_97) FrameCount() (int, error) {
 	dfc, err := c.DropFrameCount()
 	if err != nil {
 		return 0, err
@@ -68,7 +77,7 @@ func (c *TC) FrameCount() (int, error) {
 }
 
 // NewTCFrameCount returns a dropframe timecode from frame count.
-func NewTCFrameCount(fc int) *TC {
+func NewDF29_97FrameCount(fc int) *DF29_97 {
 	mins := fc / (60 * 30)
 	tenMins := fc / (10 * 60 * 30)
 	dfc := fc + mins*2 - tenMins*2
@@ -76,25 +85,25 @@ func NewTCFrameCount(fc int) *TC {
 	mm := (dfc - hh*3600*30) / (60 * 30)
 	ss := (dfc - hh*3600*30 - mm*60*30) / 30
 	ff := dfc - hh*3600*30 - mm*60*30 - ss*30
-	return NewTC(fmt.Sprintf("%02d:%02d:%02d;%02d", hh, mm, ss, ff))
+	return NewDF29_97(fmt.Sprintf("%02d:%02d:%02d;%02d", hh, mm, ss, ff))
 }
 
-var frameTimeNS = int(math.Trunc(float64(1001) / float64(30000) * float64(1000000000)))
-
 // Dur returns the duration of the timecode.
-func (c *TC) Dur() time.Duration {
+func (c *DF29_97) Dur() time.Duration {
 	fc, _ := c.FrameCount()
-	return time.Duration(fc * frameTimeNS)
+	return time.Duration(fc) * tDF29_97
 }
 
 // Add sums timecodes c+tc.
-func (c *TC) Add(tc *TC) *TC {
-	fc := (c.Dur() + tc.Dur()) / time.Duration(frameTimeNS)
-	return NewTCFrameCount(int(fc))
+func (c *DF29_97) Add(tc *DF29_97) *DF29_97 {
+	fc1, _ := c.FrameCount()
+	fc2, _ := tc.FrameCount()
+	return NewDF29_97FrameCount(fc1 + fc2)
 }
 
 // Sub returns c-tc as timecode.
-func (c *TC) Sub(tc *TC) *TC {
-	fc := (c.Dur() - tc.Dur()) / time.Duration(frameTimeNS)
-	return NewTCFrameCount(int(fc))
+func (c *DF29_97) Sub(tc *DF29_97) *DF29_97 {
+	fc1, _ := c.FrameCount()
+	fc2, _ := tc.FrameCount()
+	return NewDF29_97FrameCount(fc1 - fc2)
 }

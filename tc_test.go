@@ -1,8 +1,8 @@
-package df
+package tc
 
 import "testing"
 
-func TestFrameCount(t *testing.T) {
+func TestFrameCountDF29_97(t *testing.T) {
 	dat := []struct {
 		i string
 		o int
@@ -14,7 +14,7 @@ func TestFrameCount(t *testing.T) {
 		{i: "00:06:42:01", o: 12049},
 	}
 	for i, d := range dat {
-		tc := NewTC(d.i)
+		tc := NewDF29_97(d.i)
 		o, err := tc.FrameCount()
 		if err != nil {
 			t.Error(err)
@@ -37,7 +37,7 @@ func TestFrameCountToDFTimeCode(t *testing.T) {
 		{o: "00:06:42;01", i: 12049},
 	}
 	for i, d := range dat {
-		o := NewTCFrameCount(d.i)
+		o := NewDF29_97FrameCount(d.i)
 		if o.String() != d.o {
 			t.Errorf("case %d: unexpected value: %s", i, o)
 		}
@@ -57,8 +57,8 @@ func TestSub(t *testing.T) {
 		{"10:44:20:00", "10:36:28:00", "00:07:52:00"},
 	}
 	for i, d := range dat {
-		o := NewTC(d.a).Sub(NewTC(d.b))
-		if o.String() != NewTC(d.o).String() {
+		o := NewDF29_97(d.a).Sub(NewDF29_97(d.b))
+		if o.String() != NewDF29_97(d.o).String() {
 			t.Errorf("case %d: Unexpected value: %s", i, o)
 		}
 	}
