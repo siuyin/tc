@@ -14,7 +14,8 @@ func TestFrameCount(t *testing.T) {
 		{i: "00:06:42:01", o: 12049},
 	}
 	for i, d := range dat {
-		o, err := FrameCount(d.i)
+		tc := NewTC(d.i)
+		o, err := tc.FrameCount()
 		if err != nil {
 			t.Error(err)
 		}
@@ -36,9 +37,29 @@ func TestFrameCountToDFTimeCode(t *testing.T) {
 		{o: "00:06:42;01", i: 12049},
 	}
 	for i, d := range dat {
-		o := TimeCode(d.i)
-		if o != d.o {
+		o := NewTCFrameCount(d.i)
+		if o.String() != d.o {
 			t.Errorf("case %d: unexpected value: %s", i, o)
+		}
+	}
+}
+
+func TestSub(t *testing.T) {
+	dat := []struct {
+		a, b string
+		o    string
+	}{
+		{"10:10:45:21", "10:00:00:00", "00:10:45:21"},
+		{"10:16:32:11", "10:10:55:27", "00:05:36:12"},
+		{"10:23:59:19", "10:16:42:29", "00:07:16:22"},
+		{"10:29:26:01", "10:24:10:00", "00:05:16:01"},
+		{"10:36:18:01", "10:29:36:00", "00:06:42:01"},
+		{"10:44:20:00", "10:36:28:00", "00:07:52:00"},
+	}
+	for i, d := range dat {
+		o := NewTC(d.a).Sub(NewTC(d.b))
+		if o.String() != NewTC(d.o).String() {
+			t.Errorf("case %d: Unexpected value: %s", i, o)
 		}
 	}
 }
