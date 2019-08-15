@@ -16,6 +16,7 @@ type TC interface {
 	Add(tc *TC) *TC
 	Sub(tc *TC) *TC
 	Dur() time.Duration
+	FrameCount() int
 	String() string
 }
 
