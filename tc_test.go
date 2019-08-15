@@ -1,6 +1,7 @@
 package tc
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
@@ -114,4 +115,13 @@ func TestSub(t *testing.T) {
 			t.Errorf("case %d: Unexpected value: %s", i, o)
 		}
 	}
+}
+
+func ExampleTC() {
+	var a TC
+	a = NewDF29_97("00:00:10:02")
+	var b TC
+	b = NewDF29_97("01:00:00:00")
+	fmt.Println(a.Dur())
+	fmt.Println(a.Add(b))
 }

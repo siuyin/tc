@@ -165,14 +165,14 @@ func (c *DF29_97) Dur() time.Duration {
 }
 
 // Add sums timecodes c+tc.
-func (c *DF29_97) Add(tc *DF29_97) *DF29_97 {
+func (c *DF29_97) Add(tc TC) TC {
 	fc1, _ := c.FrameCount()
 	fc2, _ := tc.FrameCount()
 	return NewDF29_97FrameCount(fc1 + fc2)
 }
 
 // Sub returns c-tc as timecode.
-func (c *DF29_97) Sub(tc *DF29_97) *DF29_97 {
+func (c *DF29_97) Sub(tc TC) TC {
 	fc1, _ := c.FrameCount()
 	fc2, _ := tc.FrameCount()
 	return NewDF29_97FrameCount(fc1 - fc2)
