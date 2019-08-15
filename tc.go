@@ -70,14 +70,14 @@ func NewN25FrameCount(fc int) *N25 {
 }
 
 // Add adds timecodes c + tc.
-func (c *N25) Add(tc *N25) *N25 {
+func (c *N25) Add(tc TC) TC {
 	fc1, _ := c.FrameCount()
 	fc2, _ := tc.FrameCount()
 	return NewN25FrameCount(fc1 + fc2)
 }
 
 // Sub subtracts timecodes c - tc.
-func (c *N25) Sub(tc *N25) *N25 {
+func (c *N25) Sub(tc TC) TC {
 	fc1, _ := c.FrameCount()
 	fc2, _ := tc.FrameCount()
 	return NewN25FrameCount(fc1 - fc2)
