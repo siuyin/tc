@@ -5,3 +5,5 @@
 go get github.com/siuyin/tc
 
 ```
+
+See tc_test.go for usage examples.
