@@ -12,6 +12,11 @@ func TestFrameCountDF29_97(t *testing.T) {
 		{i: "00:07:16:22", o: 13088},
 		{i: "00:05:16:01", o: 9471},
 		{i: "00:06:42:01", o: 12049},
+		{i: "01:00:00;00", o: 107892},
+		{i: "02:00:00;00", o: 215784},
+		{i: "10:00:00;00", o: 1078920},
+		{i: "20:00:00;00", o: 2157840},
+		{i: "30:00:00;00", o: 3236760},
 	}
 	for i, d := range dat {
 		tc := NewDF29_97(d.i)
@@ -35,6 +40,11 @@ func TestFrameCountToDFTimeCode(t *testing.T) {
 		{o: "00:07:16;22", i: 13088},
 		{o: "00:05:16;01", i: 9471},
 		{o: "00:06:42;01", i: 12049},
+		{o: "01:00:00;00", i: 107892},
+		{o: "02:00:00;00", i: 215784},
+		{o: "10:00:00;00", i: 1078920},
+		{o: "20:00:00;00", i: 2157840},
+		{o: "30:00:00;00", i: 3236760},
 	}
 	for i, d := range dat {
 		o := NewDF29_97FrameCount(d.i)
@@ -64,11 +74,19 @@ func TestSub(t *testing.T) {
 	}
 }
 
-func TestOverflowDF29_97(t *testing.T) {
-	t1 := NewDF29_97("99:00:00:00")
-	t2 := NewDF29_97("90:00:00:00")
+func TestAddDF29_97(t *testing.T) {
+	t1 := NewDF29_97("10:00:00:00")
+	t2 := NewDF29_97("10:00:00:00")
 	t3 := t1.Add(t2)
-	if t3.String() != "189:00:00:00" {
+	if t3.String() != "20:00:00;00" {
+		t.Errorf("unexpected value: %s", t3)
+	}
+}
+func TestOverflowF29_97(t *testing.T) {
+	t1 := NewDF29_97("40:00:00:00")
+	t2 := NewDF29_97("80:00:00:00")
+	t3 := t1.Add(t2)
+	if t3.String() != "189:00:00;00" {
 		t.Errorf("unexpected value: %s", t3)
 	}
 }

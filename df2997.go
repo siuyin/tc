@@ -3,6 +3,7 @@ package tc
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -29,22 +30,39 @@ func (c *DF29_97) String() string {
 // DropFrameCount returns the number of frames at 30 fps given a
 // dropframe timecode tc.
 func (c *DF29_97) DropFrameCount() (int, error) {
-	hh, err := strconv.Atoi(c.tc[0:2])
+	c1 := strings.Index(c.tc, ":")
+	hh, err := strconv.Atoi(c.tc[0:c1])
 	if err != nil {
 		return 0, err
 	}
-	mm, err := strconv.Atoi(c.tc[3:5])
+	mm, err := strconv.Atoi(c.tc[c1+1 : c1+3])
 	if err != nil {
 		return 0, err
 	}
-	ss, err := strconv.Atoi(c.tc[6:8])
+	ss, err := strconv.Atoi(c.tc[c1+4 : c1+6])
 	if err != nil {
 		return 0, err
 	}
-	ff, err := strconv.Atoi(c.tc[9:11])
+	ff, err := strconv.Atoi(c.tc[c1+7 : c1+9])
 	if err != nil {
 		return 0, err
 	}
+	// hh, err := strconv.Atoi(c.tc[0:2])
+	// if err != nil {
+	// 	return 0, err
+	// }
+	// mm, err := strconv.Atoi(c.tc[3:5])
+	// if err != nil {
+	// 	return 0, err
+	// }
+	// ss, err := strconv.Atoi(c.tc[6:8])
+	// if err != nil {
+	// 	return 0, err
+	// }
+	// ff, err := strconv.Atoi(c.tc[9:11])
+	// if err != nil {
+	// 	return 0, err
+	// }
 	return hh*3600*30 + mm*60*30 + ss*30 + ff, nil
 }
 
@@ -62,8 +80,12 @@ func (c *DF29_97) FrameCount() (int, error) {
 
 // NewDF29_97FrameCount returns a dropframe timecode from frame count.
 func NewDF29_97FrameCount(fc int) *DF29_97 {
-	mins := fc / (60 * 30)
-	tenMins := fc / (10 * 60 * 30)
+	const (
+		fc10Mins = 10 * 60 * 30000 / 1001
+		fc1Min   = 1 * 60 * 30000 / 1001
+	)
+	tenMins := fc / fc10Mins
+	mins := fc / fc1Min
 	dfc := fc + mins*2 - tenMins*2
 	hh := dfc / (3600 * 30)
 	mm := (dfc - hh*3600*30) / (60 * 30)

@@ -3,6 +3,7 @@ package tc
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -23,26 +24,27 @@ func NewN25(tc string) *N25 {
 
 // FrameCount returns an N25 timecode frame count.
 func (c *N25) FrameCount() (int, error) {
-	hh, err := strconv.Atoi(c.tc[0:2])
+	c1 := strings.Index(c.tc, ":")
+	hh, err := strconv.Atoi(c.tc[0:c1])
 	if err != nil {
 		return 0, err
 	}
-	mm, err := strconv.Atoi(c.tc[3:5])
+	mm, err := strconv.Atoi(c.tc[c1+1 : c1+3])
 	if err != nil {
 		return 0, err
 	}
-	ss, err := strconv.Atoi(c.tc[6:8])
+	ss, err := strconv.Atoi(c.tc[c1+4 : c1+6])
 	if err != nil {
 		return 0, err
 	}
-	ff, err := strconv.Atoi(c.tc[9:11])
+	ff, err := strconv.Atoi(c.tc[c1+7 : c1+9])
 	if err != nil {
 		return 0, err
 	}
 	return hh*3600*25 + mm*60*25 + ss*25 + ff, nil
 }
 
-// NewN25FrameCount returns a new timecode given a frame count.
+// // NewN25FrameCount returns a new timecode given a frame count.
 func NewN25FrameCount(fc int) *N25 {
 	hh := fc / (3600 * 25)
 	mm := (fc - hh*3600*25) / (60 * 25)
