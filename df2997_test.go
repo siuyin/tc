@@ -86,7 +86,7 @@ func TestOverflowF29_97(t *testing.T) {
 	t1 := NewDF29_97("40:00:00:00")
 	t2 := NewDF29_97("80:00:00:00")
 	t3 := t1.Add(t2)
-	if t3.String() != "189:00:00;00" {
+	if t3.String() != "120:00:00;00" {
 		t.Errorf("unexpected value: %s", t3)
 	}
 }
