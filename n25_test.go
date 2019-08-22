@@ -53,3 +53,12 @@ func TestDurN25(t *testing.T) {
 		}
 	}
 }
+
+func TestOverflowN25(t *testing.T) {
+	t1 := NewN25("99:00:00:00")
+	t2 := NewN25("90:00:00:00")
+	t3 := t1.Add(t2)
+	if t3.String() != "189:00:00:00" {
+		t.Errorf("unexpected value: %s", t3)
+	}
+}

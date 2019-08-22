@@ -16,7 +16,9 @@ func NewDF29_97(tc string) *DF29_97 {
 	if !validTC(tc) {
 		return &DF29_97{"00:00:00;00"}
 	}
-	tc = tc[0:8] + ";" + tc[9:11]
+	l := len(tc)
+	tc = tc[0:l-3] + ";" + tc[l-2:l]
+	//tc = tc[0:8] + ";" + tc[9:11]
 	return &DF29_97{tc}
 }
 

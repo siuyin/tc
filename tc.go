@@ -20,7 +20,7 @@ type TC interface {
 }
 
 func validTC(tc string) bool {
-	if len(tc) != 11 {
+	if len(tc) < 11 {
 		return false
 	}
 	return true

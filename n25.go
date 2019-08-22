@@ -16,7 +16,8 @@ func NewN25(tc string) *N25 {
 	if !validTC(tc) {
 		return &N25{"00:00:00:00"}
 	}
-	tc = tc[0:8] + ":" + tc[9:11]
+	l := len(tc)
+	tc = tc[0:l-3] + ":" + tc[l-2:l]
 	return &N25{tc}
 }
 

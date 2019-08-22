@@ -63,3 +63,12 @@ func TestSub(t *testing.T) {
 		}
 	}
 }
+
+func TestOverflowDF29_97(t *testing.T) {
+	t1 := NewDF29_97("99:00:00:00")
+	t2 := NewDF29_97("90:00:00:00")
+	t3 := t1.Add(t2)
+	if t3.String() != "189:00:00:00" {
+		t.Errorf("unexpected value: %s", t3)
+	}
+}
